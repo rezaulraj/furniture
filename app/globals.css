@@ -115,3 +115,27 @@ body {
   .reveal, .kenburns, .fade-up, .marquee { animation: none; transition: none; opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
 }
+
+/* Mega menu columns: quick, soft fade-up when a category opens */
+@keyframes mega-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.mega-in {
+  animation: mega-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mega-in { animation: none; }
+}
+
+/* Hero slider progress bar */
+@keyframes hero-progress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+.hero-progress {
+  animation-name: hero-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}

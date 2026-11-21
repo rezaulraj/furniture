@@ -2,6 +2,9 @@ import Image from "next/image";
 import Header from "./components/Header";
 import Reveal from "./components/Reveal";
 import Carousel from "./components/Carousel";
+import HeroSlider from "./components/HeroSlider";
+import Footer from "./components/Footer";
+import Link from "next/link";
 
 const img = (id: string, w = 1600) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
@@ -65,28 +68,44 @@ const trio = [
   { t: "Interior Project Solution", d: "From homes to hotels — our design team delivers complete turnkey interiors.", i: "1551298370-9d3d53740c72" },
 ];
 
-const footer = {
-  Customers: ["Your Account", "Track Order", "Trade Customers", "Request a Catalogue", "Feedback", "Contact Us"],
-  "Need Help?": ["FAQ", "Delivery", "Returns & Refunds", "EMI Options", "Showroom Locator", "Care Guide"],
-  Company: ["About Us", "Careers", "Press", "Sustainability", "Franchise", "Terms & Privacy"],
-  Inspiration: ["Style Notes Blog", "Online Catalogue", "Lookbooks", "Room Planner", "Our Shorts"],
-};
+
 
 /* ---------------- helpers ---------------- */
 
-function SectionTitle({ plain, accent, link }: { plain: string; accent: string; link?: string }) {
+function SectionTitle({
+  plain,
+  accent,
+  link,
+  href = "#",
+}: {
+  plain: string;
+  accent: string;
+  link?: string;
+  href?: string;
+}) {
+  const title = `${plain} ${accent.charAt(0).toUpperCase()}${accent.slice(1)}`;
   return (
-    <Reveal className="mb-8 flex items-end justify-between gap-4 md:mb-10">
-      <div className="hidden w-32 md:block" />
-      <h2 className="text-center text-[clamp(2.5rem,5vw,4.25rem)] font-light leading-[1.05] tracking-[-0.02em] text-ink md:flex-1">
-        {plain} <span className="font-semibold italic text-red">{accent}</span>
-      </h2>
-      {link ? (
-        <a href="#" className="link-line w-32 shrink-0 text-right text-[12px] font-semibold uppercase tracking-[0.15em] text-ink hover:text-red">
-          {link} →
-        </a>
-      ) : (
-        <div className="hidden w-32 md:block" />
+    <Reveal className="mb-8 flex items-center justify-between gap-4 md:mb-10">
+      <Link href={href} className="group flex items-center gap-4">
+        <h2 className="text-[clamp(1.75rem,2.4vw,2.25rem)] font-medium leading-tight tracking-[-0.005em] text-ink">
+          {title}
+        </h2>
+        <svg
+          width="44"
+          height="14"
+          viewBox="0 0 44 14"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          className="text-ink transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-x-2 group-hover:text-red"
+        >
+          <path d="M0 7h42M36 1l6 6-6 6" />
+        </svg>
+      </Link>
+      {link && (
+        <Link href={href} className="link-line shrink-0 text-[14px] font-medium text-charcoal hover:text-red">
+          {link}
+        </Link>
       )}
     </Reveal>
   );
@@ -149,8 +168,8 @@ function Feature({
           >
             <div className="bg-white/95 p-8 text-center backdrop-blur-sm md:p-14">
               <span className="mx-auto mb-5 block h-[3px] w-10 bg-red" />
-              <h3 className="text-[clamp(2.5rem,4vw,3.5rem)] font-light leading-[1.05] tracking-[-0.02em] text-ink">
-                {plain} <span className="font-semibold italic">{accent}</span>
+              <h3 className="text-[clamp(1.75rem,2.4vw,2.25rem)] font-medium leading-tight text-ink">
+                {plain} {accent}
               </h3>
               <p className="mx-auto mt-4 max-w-[280px] text-[15px] leading-relaxed text-muted">{text}</p>
               <a
@@ -175,55 +194,8 @@ export default function Home() {
       <Header />
 
       <main>
-        {/* HERO */}
-        <section className="relative h-[100svh] min-h-[600px] overflow-hidden bg-charcoal">
-          <Image
-            src={img("1618220179428-22790b461013", 2400)}
-            alt="A warm, modern living room"
-            fill
-            preload
-            sizes="100vw"
-            className="kenburns object-cover"
-          />
-          <div className="absolute inset-0 bg-black/30" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.35)_0%,transparent_65%)]" />
-          <div className="relative flex h-full flex-col items-center justify-center px-4 pt-24 text-center text-white">
-            <p
-              className="fade-up text-[12px] font-semibold uppercase tracking-[0.45em] text-white/80 md:text-[13px]"
-              style={{ "--delay": "200ms" } as React.CSSProperties}
-            >
-              New Collection 2026
-            </p>
-            <h1
-              className="fade-up mt-5 text-[clamp(3rem,7.5vw,7rem)] font-light leading-[1] tracking-[-0.03em]"
-              style={{ "--delay": "380ms" } as React.CSSProperties}
-            >
-              Complements your <span className="font-semibold italic">lifestyle</span>
-            </h1>
-            <span
-              className="fade-up mt-8 block h-[2px] w-16 bg-red"
-              style={{ "--delay": "560ms" } as React.CSSProperties}
-            />
-            <p
-              className="fade-up mt-6 text-lg font-light tracking-[0.08em] text-white/85 md:text-xl"
-              style={{ "--delay": "680ms" } as React.CSSProperties}
-            >
-              The expression of rest
-            </p>
-            <a
-              href="#"
-              className="fade-up group mt-10 inline-flex items-center gap-3 border border-white/80 px-9 py-4 text-[12px] font-semibold uppercase tracking-[0.22em] text-white backdrop-blur-[2px] transition-all duration-500 hover:border-red hover:bg-red"
-              style={{ "--delay": "820ms" } as React.CSSProperties}
-            >
-              Explore now
-              <span className="transition-transform duration-500 group-hover:translate-x-1.5">→</span>
-            </a>
-          </div>
-          <div className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/70 md:flex">
-            Scroll
-            <span className="h-10 w-px animate-pulse bg-white/60" />
-          </div>
-        </section>
+        {/* HERO SLIDER */}
+        <HeroSlider />
 
         {/* USP STRIP */}
         <section className="border-b border-line">
@@ -245,7 +217,7 @@ export default function Home() {
         {/* SHOP BY CATEGORY */}
         <section className="bg-mist py-16 md:py-24">
           <div className="mx-auto max-w-[1440px] px-4 md:px-8">
-            <SectionTitle plain="Shop by" accent="category" link="All categories" />
+            <SectionTitle plain="Shop by" accent="category" link="All categories" href="/categories" />
             <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-5">
               {categories.map((c, k) => (
                 <Tile key={c.n} {...c} delay={k * 90} />
@@ -338,8 +310,8 @@ export default function Home() {
         <section className="py-16 md:py-24">
           <div className="mx-auto max-w-[1440px] px-4 md:px-8">
             <Reveal className="mb-10 text-center">
-              <h2 className="text-[clamp(2.25rem,5vw,4.25rem)] font-light leading-[1.05] tracking-[-0.02em] text-ink">
-                <span className="font-semibold text-red">@furniturehome</span> <span className="italic">in your home</span>
+              <h2 className="text-[clamp(1.75rem,2.4vw,2.25rem)] font-medium leading-tight text-ink">
+                <span className="text-red">@furniturehome</span> in your home
               </h2>
               <p className="mt-3 text-muted">Share your space with #MyFurniture for a chance to be featured.</p>
             </Reveal>
@@ -388,8 +360,8 @@ export default function Home() {
           <div className="mx-auto grid max-w-[1440px] items-center gap-10 px-4 md:grid-cols-[1fr_2fr] md:gap-16 md:px-8">
             <Reveal>
               <p className="text-[12px] font-semibold uppercase tracking-[0.25em] text-red">Style note</p>
-              <h2 className="mt-4 text-[clamp(2.75rem,5vw,4.5rem)] font-light leading-[1.02] tracking-[-0.02em] text-ink">
-                How to set the <span className="font-semibold italic">table</span>
+              <h2 className="mt-4 text-[clamp(2rem,3vw,2.75rem)] font-medium leading-tight text-ink">
+                How to set the table
               </h2>
               <p className="mt-5 max-w-sm text-[16px] leading-relaxed text-muted">
                 The dining table takes centre stage this season — discover our top tips for thoughtful styling, from layered linens to warm candlelight.
@@ -415,7 +387,7 @@ export default function Home() {
                   <div className="relative aspect-[4/3] overflow-hidden bg-mist">
                     <Image src={img(t.i, 900)} alt={t.t} fill sizes="(min-width:768px) 33vw, 100vw" className="object-cover transition-transform duration-[1.2s] group-hover:scale-105" />
                   </div>
-                  <h3 className="mt-6 text-[clamp(1.75rem,2.6vw,2.25rem)] font-medium leading-tight tracking-[-0.01em] text-ink transition-colors group-hover:text-red">{t.t}</h3>
+                  <h3 className="mt-6 text-[clamp(1.375rem,1.8vw,1.625rem)] font-medium leading-tight text-ink transition-colors group-hover:text-red">{t.t}</h3>
                   <p className="mt-2 max-w-sm text-[15px] leading-relaxed text-muted">{t.d}</p>
                   <span className="mt-5 inline-block border border-ink px-6 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink transition-all duration-300 group-hover:border-red group-hover:bg-red group-hover:text-white">
                     Learn more
@@ -433,8 +405,8 @@ export default function Home() {
               <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10" />
               <div className="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-rose-deep/40" />
               <div className="relative">
-                <h2 className="text-[clamp(2.75rem,6vw,5rem)] font-light leading-[1.02] tracking-[-0.02em]">
-                  Become a <span className="font-semibold italic">Trade</span> Customer
+                <h2 className="text-[clamp(2rem,3.2vw,2.75rem)] font-medium leading-tight">
+                  Become a Trade Customer
                 </h2>
                 <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-white/90">
                   We love working with professionals who share our passion for homeware. Interior designers, developers and architects enjoy generous discounts and a dedicated account manager.
@@ -448,50 +420,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* FOOTER */}
-      <footer className="mt-16 bg-mist md:mt-24">
-        <div className="mx-auto grid max-w-[1440px] gap-12 px-4 py-16 md:px-8 lg:grid-cols-[3fr_1.4fr]">
-          <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
-            {Object.entries(footer).map(([h, links]) => (
-              <div key={h}>
-                <h4 className="mb-5 text-[12px] font-semibold uppercase tracking-[0.2em] text-ink">{h}</h4>
-                <ul className="space-y-3">
-                  {links.map((l) => (
-                    <li key={l}>
-                      <a href="#" className="text-[14px] text-muted transition-colors hover:text-red">{l}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <div className="bg-white p-8">
-            <h4 className="text-3xl font-light tracking-[-0.01em] text-ink">
-              News<span className="font-semibold italic text-red">letter</span>
-            </h4>
-            <p className="mt-2 text-[14px] leading-relaxed text-muted">
-              Unlock the secret to beautiful living. Be first to hear about new collections, exclusive offers and design tips.
-            </p>
-            <form className="mt-6">
-              <input type="email" placeholder="Your email address" className="w-full border border-line px-4 py-3 text-[14px] outline-none transition-colors focus:border-red" />
-              <button type="submit" className="mt-3 w-full bg-charcoal py-3.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-red">
-                Sign up
-              </button>
-            </form>
-          </div>
-        </div>
-        <div className="border-t border-line">
-          <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-4 px-4 py-6 text-[12px] text-muted md:flex-row md:px-8">
-            <span className="text-lg font-semibold uppercase tracking-[0.22em] text-ink">Furni<span className="text-red">ture</span></span>
-            <div className="flex gap-3">
-              {["bKash", "Nagad", "VISA", "Mastercard", "AMEX"].map((p) => (
-                <span key={p} className="rounded border border-line bg-white px-2 py-1 font-semibold text-charcoal">{p}</span>
-              ))}
-            </div>
-            <span>© 2026 Furniture. All rights reserved.</span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }
