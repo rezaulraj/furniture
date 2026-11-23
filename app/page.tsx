@@ -5,6 +5,8 @@ import Carousel from "./components/Carousel";
 import HeroSlider from "./components/HeroSlider";
 import Footer from "./components/Footer";
 import Link from "next/link";
+import { roomHref, slugify } from "./components/menuData";
+import { findSub, productHref, productsFor, taka } from "./components/catalog";
 
 const img = (id: string, w = 1600) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
@@ -20,29 +22,36 @@ const usps = [
 ];
 
 const categories = [
-  { n: "Living Room", i: "1555041469-a586c61ea9bc" },
-  { n: "Bedroom", i: "1505693416388-ac5ce068fe85" },
-  { n: "Dining", i: "1617806118233-18e1de247200" },
-  { n: "Lighting", i: "1507473885765-e6ed057f782c" },
-  { n: "Storage", i: "1595428774223-ef52624120d2" },
+  { n: "Living Room", i: "1555041469-a586c61ea9bc", href: roomHref("Living Room") },
+  { n: "Bedroom", i: "1505693416388-ac5ce068fe85", href: roomHref("Bedroom") },
+  { n: "Dining", i: "1617806118233-18e1de247200", href: roomHref("Dining") },
+  { n: "Lighting", i: "1507473885765-e6ed057f782c", href: roomHref("Lighting") },
+  { n: "Storage", i: "1595428774223-ef52624120d2", href: roomHref("Storage") },
 ];
 
-const products = [
-  { n: "Andaman Oak Counter Stool", p: "12,500", i: "1503602642458-232111445657", tag: "Bestseller" },
-  { n: "Dahlia Lounge Armchair", p: "34,800", i: "1567538096630-e0c55bd6374c", tag: "New" },
-  { n: "Linden Dining Chair", p: "9,900", i: "1592078615290-033ee584e267" },
-  { n: "Marigold Accent Chair", p: "21,150", i: "1538688525198-9b88f6f53126", tag: "-20%" },
-  { n: "Lucan 3-Seater Sofa", p: "89,199", i: "1493663284031-b7e3aefcae8e" },
-  { n: "Anderson Table Lamp", p: "6,450", i: "1513506003901-1e6a229e2d15", tag: "New" },
-  { n: "Walnut Round Dining Table", p: "65,000", i: "1532372320572-cda25653a26d" },
+// Best Sellers: real catalogue products, so each card opens its product page.
+const BEST: [room: string, sub: string][] = [
+  ["Kitchen", "Counter Stool"],
+  ["Living Room", "Easy Chair"],
+  ["Dining", "Wooden Dining Chair"],
+  ["Living Room", "Accent Chair"],
+  ["Living Room", "Fabric Sofa"],
+  ["Lighting", "Table Lamps"],
+  ["Dining", "Round Dining Table"],
 ];
+const products = BEST.flatMap(([room, sub]) => {
+  const info = findSub(room, slugify(sub));
+  if (!info) return [];
+  const p = productsFor(room, info)[0];
+  return [{ p, href: productHref(room, sub, p.id) }];
+});
 
 const rooms = [
-  { n: "Bedroom", i: "1540518614846-7eded433c457" },
-  { n: "Lounge", i: "1586023492125-27b2c045efd7" },
-  { n: "Kitchen", i: "1556911220-bff31c812dba" },
-  { n: "Office", i: "1524758631624-e2822e304c36" },
-  { n: "Hallway", i: "1484101403633-562f891dc89a" },
+  { n: "Bedroom", i: "1540518614846-7eded433c457", href: roomHref("Bedroom") },
+  { n: "Lounge", i: "1586023492125-27b2c045efd7", href: roomHref("Living Room") },
+  { n: "Kitchen", i: "1556911220-bff31c812dba", href: roomHref("Kitchen") },
+  { n: "Office", i: "1524758631624-e2822e304c36", href: roomHref("Office") },
+  { n: "Hallway", i: "1484101403633-562f891dc89a", href: `${roomHref("Living Room")}#shoe-rack` },
 ];
 
 const insta = [
@@ -85,36 +94,33 @@ function SectionTitle({
 }) {
   const title = `${plain} ${accent.charAt(0).toUpperCase()}${accent.slice(1)}`;
   return (
-    <Reveal className="mb-8 flex items-center justify-between gap-4 md:mb-10">
-      <Link href={href} className="group flex items-center gap-4">
-        <h2 className="text-[clamp(1.75rem,2.4vw,2.25rem)] font-medium leading-tight tracking-[-0.005em] text-ink">
+    // Title centred; optional link sits on the right (below the title on phones).
+    <Reveal className="mb-8 flex flex-col items-center gap-3 md:mb-12 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6">
+      <span aria-hidden className="hidden md:block" />
+      <Link href={href} className="group flex flex-col items-center text-center">
+        <h2 className="text-[clamp(1.75rem,2.4vw,2.25rem)] font-medium leading-tight tracking-[-0.005em] text-ink transition-colors duration-300 group-hover:text-red">
           {title}
         </h2>
-        <svg
-          width="44"
-          height="14"
-          viewBox="0 0 44 14"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          className="text-ink transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-x-2 group-hover:text-red"
-        >
-          <path d="M0 7h42M36 1l6 6-6 6" />
-        </svg>
+        <span className="mt-3 block h-[2px] w-10 bg-red transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:w-16" />
       </Link>
-      {link && (
-        <Link href={href} className="link-line shrink-0 text-[14px] font-medium text-charcoal hover:text-red">
+      {link ? (
+        <Link
+          href={href}
+          className="link-line shrink-0 text-[14px] font-medium text-charcoal hover:text-red md:justify-self-end"
+        >
           {link}
         </Link>
+      ) : (
+        <span aria-hidden className="hidden md:block" />
       )}
     </Reveal>
   );
 }
 
-function Tile({ n, i, delay }: { n: string; i: string; delay: number }) {
+function Tile({ n, i, href, delay }: { n: string; i: string; href: string; delay: number }) {
   return (
     <Reveal delay={delay}>
-      <a href="#" className="group block">
+      <Link href={href} className="group block">
         <div className="relative aspect-[4/5] overflow-hidden bg-mist">
           <Image
             src={img(i, 700)}
@@ -131,7 +137,7 @@ function Tile({ n, i, delay }: { n: string; i: string; delay: number }) {
             →
           </span>
         </div>
-      </a>
+      </Link>
     </Reveal>
   );
 }
@@ -232,19 +238,19 @@ export default function Home() {
             <SectionTitle plain="Best" accent="sellers" link="View all" />
             <Reveal>
               <Carousel>
-                {products.map((p) => (
-                  <a key={p.n} href="#" className="group w-[72%] shrink-0 snap-start sm:w-[45%] lg:w-[calc(25%-18px)]">
+                {products.map(({ p, href }) => (
+                  <Link key={href} href={href} className="group w-[72%] shrink-0 snap-start sm:w-[45%] lg:w-[calc(25%-18px)]">
                     <div className="relative aspect-[4/5] overflow-hidden bg-mist">
                       <Image
-                        src={img(p.i, 800)}
-                        alt={p.n}
+                        src={img(p.img, 800)}
+                        alt={p.name}
                         fill
                         sizes="(min-width:1024px) 25vw, 70vw"
                         className="object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-105"
                       />
                       {p.tag && (
-                        <span className={`absolute left-3 top-3 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-white ${p.tag.startsWith("-") ? "bg-red" : "bg-charcoal"}`}>
-                          {p.tag}
+                        <span className={`absolute left-3 top-3 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-white ${p.tag === "Sale" ? "bg-red" : "bg-charcoal"}`}>
+                          {p.tag === "Sale" && p.oldPrice ? `-${Math.round((1 - p.price / p.oldPrice) * 100)}%` : p.tag}
                         </span>
                       )}
                       <span className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-ink opacity-0 transition duration-300 group-hover:opacity-100 hover:text-red">
@@ -253,14 +259,16 @@ export default function Home() {
                         </svg>
                       </span>
                       <span className="absolute inset-x-3 bottom-3 translate-y-4 bg-white py-3 text-center text-[12px] font-semibold uppercase tracking-[0.15em] text-ink opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-red hover:text-white">
-                        Quick add
+                        View product
                       </span>
                     </div>
-                    <p className="mt-4 text-[15px] text-ink">{p.n}</p>
-                    <p className="mt-1 text-[15px] font-semibold text-ink">
-                      <span className="text-[12px] font-normal text-muted">From </span>৳{p.p}
+                    <p className="mt-4 text-[15px] text-ink transition-colors group-hover:text-red">{p.name}</p>
+                    <p className="mt-1 flex items-baseline gap-2 text-[15px] font-semibold text-ink">
+                      <span className="text-[12px] font-normal text-muted">From</span>
+                      {taka(p.price)}
+                      {p.oldPrice && <span className="text-[13px] font-normal text-muted line-through">{taka(p.oldPrice)}</span>}
                     </p>
-                  </a>
+                  </Link>
                 ))}
               </Carousel>
             </Reveal>
@@ -279,7 +287,7 @@ export default function Home() {
         {/* SHOP BY ROOM */}
         <section className="py-16 md:py-24">
           <div className="mx-auto max-w-[1440px] px-4 md:px-8">
-            <SectionTitle plain="Shop by" accent="room" link="All rooms" />
+            <SectionTitle plain="Shop by" accent="room" link="All rooms" href="/categories" />
             <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-5">
               {rooms.map((r, k) => (
                 <Tile key={r.n} {...r} delay={k * 90} />
@@ -335,7 +343,7 @@ export default function Home() {
         </section>
 
         {/* VIDEO INSPIRATION */}
-        <section className="bg-mist py-16 md:py-24">
+        <section id="inspiration" className="scroll-mt-20 bg-mist py-16 md:py-24">
           <div className="mx-auto max-w-[1440px] px-4 md:px-8">
             <SectionTitle plain="Video" accent="inspiration" link="Watch more" />
             <Reveal>

@@ -15,6 +15,8 @@ const NAV = ["Living Room", "Bedroom", "Dining", "Kitchen", "Kid's Room", "Smart
 // Shown in the main row only on very wide screens; otherwise they move into "More".
 const WIDE_ONLY: string[] = [];
 const MORE = ["Outdoor", "Lighting", "Decor", "Kitchen Accessories", "Inspiration"];
+// Where each "More" item goes: collections open their page; Inspiration jumps to the home page section.
+const moreHref = (m: string) => (MEGA[m] ? roomHref(m) : m === "Inspiration" ? "/#inspiration" : "#");
 
 const Caret = ({ className = "" }: { className?: string }) => (
   <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -22,7 +24,8 @@ const Caret = ({ className = "" }: { className?: string }) => (
   </svg>
 );
 
-export default function Header() {
+// `solid`: start with the white header (for pages without a dark banner at the top).
+export default function Header({ solid: forceSolid = false }: { solid?: boolean } = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -53,7 +56,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const solid = scrolled || open || hovered;
+  const solid = forceSolid || scrolled || open || hovered;
 
   // HATIL-style link: semibold white over the photo, regular dark on white,
   // short underline that grows from the centre on hover.
@@ -141,9 +144,12 @@ export default function Header() {
                   <ul className="border-t-2 border-red bg-white py-2 text-[15px] text-ink shadow-[0_20px_40px_-12px_rgba(0,0,0,0.25)]">
                     {[...WIDE_ONLY, ...MORE].map((m) => (
                       <li key={m} className={WIDE_ONLY.includes(m) ? "2xl:hidden" : ""}>
-                        <a href="#" className="block px-5 py-2.5 transition-all duration-300 hover:bg-mist hover:pl-7 hover:text-red">
+                        <Link
+                          href={moreHref(m)}
+                          className="block px-5 py-2.5 transition-all duration-300 hover:bg-mist hover:pl-7 hover:text-red"
+                        >
                           {m}
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -174,12 +180,12 @@ export default function Header() {
               </svg>
             </button>
             {/* Account — solid person */}
-            <button aria-label="Account" className="hidden transition-all duration-300 hover:scale-110 hover:text-red sm:block">
+            <Link href="/login" aria-label="Account — log in" className="hidden transition-all duration-300 hover:scale-110 hover:text-red sm:block">
               <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="7" r="5" />
                 <path d="M2.5 23c0-5.5 4.3-9.5 9.5-9.5s9.5 4 9.5 9.5z" />
               </svg>
-            </button>
+            </Link>
             {/* Bag — solid shopping bag with handle */}
             <button aria-label="Bag" className="transition-all duration-300 hover:scale-110 hover:text-red">
               <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
@@ -327,9 +333,9 @@ export default function Header() {
                       <span className={`text-2xl font-light text-red transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}>+</span>
                     </button>
                   ) : (
-                    <a href="#" className="block py-4 text-lg font-medium text-ink transition-colors hover:text-red">
+                    <Link href={moreHref(n)} onClick={() => setOpen(false)} className="block py-4 text-lg font-medium text-ink transition-colors hover:text-red">
                       {n}
-                    </a>
+                    </Link>
                   )}
                   {m && (
                     <div

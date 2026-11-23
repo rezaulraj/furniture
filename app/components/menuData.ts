@@ -130,6 +130,46 @@ export const MEGA: Record<string, MegaMenu> = {
       [g("Home Office", ["Study Desk", "Home Office Chair"]), g("Office Sofa")],
     ],
   },
+  Lighting: {
+    columns: [
+      [g("Ceiling Lights", ["Pendant Lights", "Chandeliers", "Flush Mount Lights"])],
+      [g("Lamps", ["Table Lamps", "Floor Lamps", "Desk Lamps", "Bedside Lamps"])],
+      [g("Wall Lights", ["Wall Sconces", "Picture Lights"]), g("Lamp Shades")],
+      [g("Outdoor & Smart", ["Outdoor Lights", "LED Strip Lights", "Smart Bulbs"])],
+    ],
+  },
+  Storage: {
+    columns: [
+      [g("Cabinets", ["Sideboards", "Display Cabinets", "Filing Cabinets"])],
+      [g("Shelving", ["Bookshelves", "Wall Shelves", "Corner Shelves"])],
+      [g("Wardrobes & Drawers", ["Wardrobes", "Chest of Drawers"])],
+      [g("Small Storage", ["Shoe Racks", "Storage Benches", "Baskets & Boxes"])],
+    ],
+  },
+  Outdoor: {
+    columns: [
+      [g("Garden Furniture", ["Garden Sets", "Outdoor Chairs", "Outdoor Tables", "Outdoor Sofas"])],
+      [g("Relax", ["Swings", "Loungers", "Hammocks"])],
+      [g("Garden Decor", ["Planters", "Outdoor Rugs", "Lanterns"])],
+      [g("Balcony Sets")],
+    ],
+  },
+  Decor: {
+    columns: [
+      [g("Wall Decor", ["Wall Art", "Mirrors", "Wall Clocks", "Floating Shelves"])],
+      [g("Textiles", ["Cushions", "Rugs", "Curtains", "Throws"])],
+      [g("Accents", ["Vases", "Candles & Holders", "Photo Frames", "Artificial Plants"])],
+      [g("Gift Sets")],
+    ],
+  },
+  "Kitchen Accessories": {
+    columns: [
+      [g("Kitchen Storage", ["Spice Racks", "Storage Jars", "Pantry Organisers"])],
+      [g("Tableware", ["Dinner Sets", "Serving Bowls", "Glassware", "Cutlery"])],
+      [g("Kitchen Tools", ["Chopping Boards", "Utensil Holders", "Trays"])],
+      [g("Table Linen")],
+    ],
+  },
 };
 
 // Product previews shown on the right side of the mega menu.
@@ -175,6 +215,26 @@ export const FEATURED: Record<string, Featured[]> = {
   Office: [
     { name: "Executive Work Desk", price: "46,800", img: "1524758631624-e2822e304c36", tag: "New" },
     { name: "Ergo Pro Chair", price: "21,150", img: "1538688525198-9b88f6f53126" },
+  ],
+  Lighting: [
+    { name: "Anderson Floor Lamp", price: "8,450", img: "1507473885765-e6ed057f782c", tag: "New" },
+    { name: "Orchid Table Lamp", price: "6,450", img: "1513506003901-1e6a229e2d15" },
+  ],
+  Storage: [
+    { name: "Cedar Wall Cabinet", price: "18,900", img: "1595428774223-ef52624120d2", tag: "Bestseller" },
+    { name: "Oslo Sideboard", price: "32,500", img: "1558997519-83ea9252edf8" },
+  ],
+  Outdoor: [
+    { name: "Willow Garden Set", price: "46,500", img: "1600210492486-724fe5c67fb0", tag: "New" },
+    { name: "Luna Outdoor Lounger", price: "18,900", img: "1615874959474-d609969a20ed" },
+  ],
+  Decor: [
+    { name: "Verona Wall Mirror", price: "7,850", img: "1616486338812-3dadae4b4ace", tag: "Bestseller" },
+    { name: "Ember Ceramic Vase", price: "2,450", img: "1583847268964-b28dc8f51f92" },
+  ],
+  "Kitchen Accessories": [
+    { name: "Oslo Dinner Set", price: "6,900", img: "1617806118233-18e1de247200", tag: "New" },
+    { name: "Cedar Spice Rack", price: "2,150", img: "1556911220-bff31c812dba" },
   ],
 };
 

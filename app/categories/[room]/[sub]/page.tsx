@@ -108,7 +108,7 @@ export default async function SubcategoryPage({ params }: PageProps<"/categories
         )}
 
         {/* LISTING (filters, sort, grid) */}
-        <ProductListing products={products} title={info.name} />
+        <ProductListing products={products} title={info.name} hrefBase={subHref(roomName, info.name)} />
 
         {/* TRUST STRIP */}
         <section className="border-y border-line bg-mist">

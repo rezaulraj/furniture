@@ -19,6 +19,11 @@ const ROOM_COPY: Record<string, string> = {
   Door: "Solid wooden doors and frames, built to last a lifetime.",
   Interior: "Complete interior design — from concept to installation.",
   Office: "Desks, chairs and storage for productive, comfortable workspaces.",
+  Lighting: "Pendants, lamps and wall lights that set the mood in every room.",
+  Storage: "Cabinets, shelving and clever storage to keep every space beautifully tidy.",
+  Outdoor: "Garden sets, swings and loungers for relaxed living outdoors.",
+  Decor: "Mirrors, rugs, vases and the finishing touches that make a house a home.",
+  "Kitchen Accessories": "Tableware, storage and tools that make cooking and hosting a pleasure.",
 };
 
 /* ---------- routing ---------- */

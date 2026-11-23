@@ -99,14 +99,8 @@ export default function CategoriesPage() {
                 key={r.id}
                 delay={(i % 4) * 80}
                 className={
-                  // 10 tiles fill a 4-col grid (desktop) and 2-col grid (phone) with no gaps
-                  i === 0
-                    ? "col-span-2 row-span-2"
-                    : i === 9
-                      ? "col-span-2"
-                      : i === 5 || i === 8
-                        ? "md:col-span-2"
-                        : ""
+                  // 15 tiles fill a 4-col grid (desktop) and 2-col grid (phone) with no gaps
+                  i === 0 ? "col-span-2 row-span-2" : i === 5 || i === 14 ? "md:col-span-2" : ""
                 }
               >
                 <Link href={roomHref(r.name)} className="group relative block h-full overflow-hidden bg-mist">

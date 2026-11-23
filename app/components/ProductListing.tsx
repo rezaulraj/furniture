@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { img, taka, type Product } from "./catalog";
 
@@ -21,7 +22,7 @@ const SORTS = [
 
 const PAGE = 12;
 
-export default function ProductListing({ products, title }: { products: Product[]; title: string }) {
+export default function ProductListing({ products, title, hrefBase }: { products: Product[]; title: string; hrefBase: string }) {
   const [bands, setBands] = useState<string[]>([]);
   const [materials, setMaterials] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
@@ -240,6 +241,7 @@ export default function ProductListing({ products, title }: { products: Product[
                   <ProductCard
                     key={p.id}
                     p={p}
+                    href={`${hrefBase}/${p.id}`}
                     delay={(i % PAGE) * 40}
                     wished={wish.includes(p.id)}
                     onWish={() => toggle(wish, setWish, p.id)}
@@ -346,12 +348,12 @@ function Stars({ value }: { value: number }) {
   );
 }
 
-function ProductCard({ p, delay, wished, onWish }: { p: Product; delay: number; wished: boolean; onWish: () => void }) {
+function ProductCard({ p, href, delay, wished, onWish }: { p: Product; href: string; delay: number; wished: boolean; onWish: () => void }) {
   const off = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
   return (
     <article className="mega-in group" style={{ "--delay": `${delay}ms` } as React.CSSProperties}>
       <div className="relative aspect-[4/5] overflow-hidden bg-mist">
-        <a href="#" aria-label={p.name} className="absolute inset-0">
+        <Link href={href} aria-label={p.name} className="absolute inset-0">
           {/* Primary + hover photo (crossfade & zoom) */}
           <Image
             src={img(p.img, 700)}
@@ -367,7 +369,7 @@ function ProductCard({ p, delay, wished, onWish }: { p: Product; delay: number; 
             sizes="(min-width:1280px) 22vw, (min-width:768px) 30vw, 48vw"
             className="scale-105 object-cover opacity-0 transition-all duration-[900ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-100 group-hover:opacity-100"
           />
-        </a>
+        </Link>
 
         {p.tag && (
           <span
@@ -405,9 +407,9 @@ function ProductCard({ p, delay, wished, onWish }: { p: Product; delay: number; 
             <span className="text-[12px] text-muted">({p.reviews})</span>
           </span>
         </div>
-        <a href="#" className="mt-1.5 block text-[15px] font-medium leading-snug text-ink transition-colors duration-300 hover:text-red md:text-[16px]">
+        <Link href={href} className="mt-1.5 block text-[15px] font-medium leading-snug text-ink transition-colors duration-300 hover:text-red md:text-[16px]">
           {p.name}
-        </a>
+        </Link>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="text-[16px] font-semibold text-ink">{taka(p.price)}</span>
           {p.oldPrice && <span className="text-[13px] text-muted line-through">{taka(p.oldPrice)}</span>}

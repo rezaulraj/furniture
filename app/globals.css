@@ -139,3 +139,13 @@ body {
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }
+
+/* Auth success: draw the tick */
+@keyframes auth-check {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+.auth-check {
+  stroke-dasharray: 24;
+  animation: auth-check 0.7s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
