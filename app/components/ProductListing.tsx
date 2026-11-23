@@ -241,7 +241,7 @@ export default function ProductListing({ products, title, hrefBase }: { products
                   <ProductCard
                     key={p.id}
                     p={p}
-                    href={`${hrefBase}/${p.id}`}
+                    href={p.href ?? `${hrefBase}/${p.id}`}
                     delay={(i % PAGE) * 40}
                     wished={wish.includes(p.id)}
                     onWish={() => toggle(wish, setWish, p.id)}

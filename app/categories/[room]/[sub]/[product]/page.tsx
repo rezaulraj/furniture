@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../../../components/Header";
 import Footer from "../../../../components/Footer";
+import PageSkeleton from "../../../../components/PageSkeleton";
 import Reveal from "../../../../components/Reveal";
 import Carousel from "../../../../components/Carousel";
 import Gallery from "../../../../components/product/Gallery";
@@ -54,7 +56,8 @@ export async function generateMetadata({ params }: PageProps<"/categories/[room]
 
 /* ---------- page ---------- */
 
-export default async function ProductPage({ params }: PageProps<"/categories/[room]/[sub]/[product]">) {
+// Reads the URL, so it renders inside <Suspense>; the header and footer stay in the shared shell.
+async function ProductContent({ params }: Pick<PageProps<"/categories/[room]/[sub]/[product]">, "params">) {
   const d = await load(params);
   if (!d) notFound();
   const { roomName, info, p } = d;
@@ -82,7 +85,6 @@ export default async function ProductPage({ params }: PageProps<"/categories/[ro
 
   return (
     <>
-      <Header solid />
 
       <main className="pt-[84px]">
         {/* Thin breadcrumb bar under the solid header */}
@@ -120,6 +122,17 @@ export default async function ProductPage({ params }: PageProps<"/categories/[ro
         <Reviews reviews={reviewsFor(p)} total={p.reviews} average={p.rating} />
       </main>
 
+    </>
+  );
+}
+
+export default function ProductPage({ params }: PageProps<"/categories/[room]/[sub]/[product]">) {
+  return (
+    <>
+      <Header solid />
+      <Suspense fallback={<PageSkeleton />}>
+        <ProductContent params={params} />
+      </Suspense>
       <Footer />
     </>
   );

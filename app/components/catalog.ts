@@ -85,6 +85,7 @@ export type Product = {
   img2: string;
   tag?: "New" | "Bestseller" | "Sale";
   order: number; // "newest" ordering
+  href?: string; // set when a listing mixes sub-categories (collections)
 };
 
 const MODELS = ["Andaman", "Linden", "Dahlia", "Marigold", "Lucan", "Anderson", "Aria", "Nova", "Orchid", "Cedar", "Willow", "Maple", "Sierra", "Luna", "Oslo", "Kensington", "Verona", "Ember"];
@@ -110,7 +111,7 @@ function basePrice(text: string) {
   return 4500;
 }
 
-// Hand-picked photo for the first product of these sub-categories (used by Best Sellers).
+// Hand-picked photo for the first product of these sub-categories (used by Best Sellers and the hero).
 const COVER: Record<string, string> = {
   "Kitchen/Counter Stool": "1503602642458-232111445657",
   "Living Room/Easy Chair": "1567538096630-e0c55bd6374c",
@@ -119,6 +120,10 @@ const COVER: Record<string, string> = {
   "Living Room/Fabric Sofa": "1493663284031-b7e3aefcae8e",
   "Lighting/Table Lamps": "1513506003901-1e6a229e2d15",
   "Dining/Round Dining Table": "1532372320572-cda25653a26d",
+  // Hero slider products: same photo as their slide.
+  "Living Room/3-Seater Sofa": "1618220179428-22790b461013",
+  "Bedroom/King Size Bed": "1505693416388-ac5ce068fe85",
+  "Dining/Dining Set": "1617806118233-18e1de247200",
 };
 
 export function productsFor(room: string, sub: SubInfo): Product[] {

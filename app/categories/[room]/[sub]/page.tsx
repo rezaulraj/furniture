@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
+import PageSkeleton from "../../../components/PageSkeleton";
 import Reveal from "../../../components/Reveal";
 import ProductListing from "../../../components/ProductListing";
 import { MEGA, ROOM_BY_SLUG, roomHref, slugify } from "../../../components/menuData";
@@ -28,7 +30,8 @@ export async function generateMetadata({ params }: PageProps<"/categories/[room]
 
 /* ---------- page ---------- */
 
-export default async function SubcategoryPage({ params }: PageProps<"/categories/[room]/[sub]">) {
+// Reads the URL, so it renders inside <Suspense>; the header and footer stay in the shared shell.
+async function SubcategoryContent({ params }: Pick<PageProps<"/categories/[room]/[sub]">, "params">) {
   const { room, sub } = await params;
   const roomName = ROOM_BY_SLUG[room];
   const info = roomName ? findSub(roomName, sub) : undefined;
@@ -46,7 +49,6 @@ export default async function SubcategoryPage({ params }: PageProps<"/categories
 
   return (
     <>
-      <Header />
 
       <main>
         {/* HERO (compact) */}
@@ -160,6 +162,17 @@ export default async function SubcategoryPage({ params }: PageProps<"/categories
         )}
       </main>
 
+    </>
+  );
+}
+
+export default function SubcategoryPage({ params }: PageProps<"/categories/[room]/[sub]">) {
+  return (
+    <>
+      <Header />
+      <Suspense fallback={<PageSkeleton />}>
+        <SubcategoryContent params={params} />
+      </Suspense>
       <Footer />
     </>
   );

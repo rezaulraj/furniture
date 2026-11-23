@@ -4,6 +4,8 @@ import Reveal from "./components/Reveal";
 import Carousel from "./components/Carousel";
 import HeroSlider from "./components/HeroSlider";
 import Footer from "./components/Footer";
+import UspStrip from "./components/UspStrip";
+import { collectionHref, findCollection } from "./components/collections";
 import Link from "next/link";
 import { roomHref, slugify } from "./components/menuData";
 import { findSub, productHref, productsFor, taka } from "./components/catalog";
@@ -12,14 +14,6 @@ const img = (id: string, w = 1600) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
 /* ---------------- data ---------------- */
-
-const usps = [
-  { t: "0% Easy EMI", s: "Up to 12 months", d: "M3 7h18v10H3zM3 11h18" },
-  { t: "Fast Delivery", s: "Across Bangladesh", d: "M3 7h11v8H3zM14 10h4l3 3v2h-7M7 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM17 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" },
-  { t: "10 Year Guarantee", s: "On solid wood", d: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" },
-  { t: "Easy Returns", s: "Within 7 days", d: "M4 12a8 8 0 1014-5.3M18 3v4h-4" },
-  { t: "Find a Showroom", s: "60+ nationwide", d: "M12 21s-6-5.3-6-11a6 6 0 0112 0c0 5.7-6 11-6 11zM12 12a2 2 0 100-4 2 2 0 000 4z" },
-];
 
 const categories = [
   { n: "Living Room", i: "1555041469-a586c61ea9bc", href: roomHref("Living Room") },
@@ -142,19 +136,8 @@ function Tile({ n, i, href, delay }: { n: string; i: string; href: string; delay
   );
 }
 
-function Feature({
-  i,
-  plain,
-  accent,
-  text,
-  side,
-}: {
-  i: string;
-  plain: string;
-  accent: string;
-  text: string;
-  side: "left" | "right";
-}) {
+function Feature({ slug, side }: { slug: string; side: "left" | "right" }) {
+  const { hero: i, plain, accent, teaser: text } = findCollection(slug)!;
   return (
     <section className="mx-auto max-w-[1440px] px-4 md:px-8">
       <Reveal>
@@ -178,12 +161,12 @@ function Feature({
                 {plain} {accent}
               </h3>
               <p className="mx-auto mt-4 max-w-[280px] text-[15px] leading-relaxed text-muted">{text}</p>
-              <a
-                href="#"
+              <Link
+                href={collectionHref(slug)}
                 className="mt-7 inline-block border border-ink px-7 py-3 text-[12px] font-semibold uppercase tracking-[0.18em] text-ink transition-all duration-300 hover:border-red hover:bg-red hover:text-white"
               >
                 Shop the collection
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -204,21 +187,7 @@ export default function Home() {
         <HeroSlider />
 
         {/* USP STRIP */}
-        <section className="border-b border-line">
-          <div className="no-scrollbar mx-auto flex max-w-[1440px] justify-between gap-8 overflow-x-auto px-4 py-6 md:px-8">
-            {usps.map((u, k) => (
-              <Reveal key={u.t} delay={k * 80} className="flex shrink-0 items-center gap-3">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="1.4">
-                  <path d={u.d} />
-                </svg>
-                <div>
-                  <p className="text-[13px] font-semibold text-ink">{u.t}</p>
-                  <p className="text-[12px] text-muted">{u.s}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </section>
+        <UspStrip />
 
         {/* SHOP BY CATEGORY */}
         <section className="bg-mist py-16 md:py-24">
@@ -276,13 +245,7 @@ export default function Home() {
         </section>
 
         {/* FEATURE 1 */}
-        <Feature
-          i="1600210492486-724fe5c67fb0"
-          plain="Find the"
-          accent="one"
-          text="Discover our full range of handcrafted sofas, made to order in your choice of fabric."
-          side="right"
-        />
+        <Feature slug="find-the-one" side="right" />
 
         {/* SHOP BY ROOM */}
         <section className="py-16 md:py-24">
@@ -298,20 +261,8 @@ export default function Home() {
 
         {/* FEATURE 2 + 3 */}
         <div className="space-y-6 md:space-y-8">
-          <Feature
-            i="1616486338812-3dadae4b4ace"
-            plain="Deck the"
-            accent="halls"
-            text="Everything you need to welcome the festive season in warm, modern style."
-            side="right"
-          />
-          <Feature
-            i="1449247709967-d4461a6a6103"
-            plain="Dining"
-            accent="out"
-            text="Discover dining tables and chairs that turn every meal into a special occasion."
-            side="left"
-          />
+          <Feature slug="deck-the-halls" side="right" />
+          <Feature slug="dining-out" side="left" />
         </div>
 
         {/* INSTAGRAM */}

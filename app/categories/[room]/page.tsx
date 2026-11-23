@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import PageSkeleton from "../../components/PageSkeleton";
 import Reveal from "../../components/Reveal";
 import { FEATURED, MEGA, ROOM_BY_SLUG, roomHref, slugify, type MenuGroup } from "../../components/menuData";
 import { POOL, ROOM_IMAGES, img, pick, subHref } from "../../components/catalog";
@@ -42,7 +44,8 @@ export async function generateMetadata({ params }: PageProps<"/categories/[room]
 
 /* ---------- page ---------- */
 
-export default async function RoomPage({ params }: PageProps<"/categories/[room]">) {
+// Reads the URL, so it renders inside <Suspense>; the header and footer stay in the shared shell.
+async function RoomContent({ params }: Pick<PageProps<"/categories/[room]">, "params">) {
   const { room } = await params;
   const name = ROOM_BY_SLUG[room];
   if (!name) notFound();
@@ -56,7 +59,6 @@ export default async function RoomPage({ params }: PageProps<"/categories/[room]
 
   return (
     <>
-      <Header />
 
       <main>
         {/* HERO */}
@@ -247,6 +249,17 @@ export default async function RoomPage({ params }: PageProps<"/categories/[room]
         </section>
       </main>
 
+    </>
+  );
+}
+
+export default function RoomPage({ params }: PageProps<"/categories/[room]">) {
+  return (
+    <>
+      <Header />
+      <Suspense fallback={<PageSkeleton />}>
+        <RoomContent params={params} />
+      </Suspense>
       <Footer />
     </>
   );

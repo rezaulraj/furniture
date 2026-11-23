@@ -129,17 +129,6 @@ body {
   .mega-in { animation: none; }
 }
 
-/* Hero slider progress bar */
-@keyframes hero-progress {
-  from { width: 0; }
-  to { width: 100%; }
-}
-.hero-progress {
-  animation-name: hero-progress;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-}
-
 /* Auth success: draw the tick */
 @keyframes auth-check {
   from { stroke-dashoffset: 24; }
