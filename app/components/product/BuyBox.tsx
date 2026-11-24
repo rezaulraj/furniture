@@ -2,8 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { img, taka, type Product } from "../catalog";
+import WishHeart from "../WishHeart";
+import { addToCart, removeLine, toCartItem, useCart } from "../cart";
+import { flyToCart } from "../flyToCart";
 
 type Extra = { name: string; price: number; img: string; href: string };
 
@@ -22,24 +26,24 @@ export default function BuyBox({
 }) {
   const [color, setColor] = useState(p.colors[0]);
   const [qty, setQty] = useState(1);
-  const [wished, setWished] = useState(false);
+  const pathname = usePathname();
   const [adding, setAdding] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
-  const [added, setAdded] = useState<string[]>([]);
+  const cart = useCart();
   const [open, setOpen] = useState<string | null>("notes");
 
-  useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(null), 2800);
-    return () => clearTimeout(t);
-  }, [toast]);
-
-  const add = () => {
+  const [justAdded, setJustAdded] = useState(false);
+  const add = async (e: React.MouseEvent<HTMLButtonElement>) => {
     setAdding(true);
-    setTimeout(() => {
-      setAdding(false);
-      setToast(`${qty} × ${p.name} (${color.name}) added to your basket`);
-    }, 700);
+    // Fly the big gallery photo if it's on screen, otherwise from the button.
+    const photo = document.querySelector("main img[fetchpriority='high'], main img") ?? e.currentTarget;
+    const r = photo.getBoundingClientRect();
+    const visible = r.bottom > 80 && r.top < window.innerHeight;
+    await flyToCart(visible ? photo : e.currentTarget, img(p.img, 300));
+    addToCart(toCartItem(p, pathname, color), qty);
+    setAdding(false);
+    setJustAdded(true);
+    setQty(1);
+    setTimeout(() => setJustAdded(false), 2000);
   };
 
   const off = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
@@ -118,21 +122,33 @@ export default function BuyBox({
         <button
           onClick={add}
           disabled={adding}
-          className="group relative flex flex-1 items-center justify-center gap-3 overflow-hidden bg-ink py-4 text-[13px] font-semibold uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-red disabled:cursor-wait"
+          className={`group relative flex flex-1 items-center justify-center gap-3 overflow-hidden py-4 text-[13px] font-semibold uppercase tracking-[0.18em] text-white transition-colors duration-300 disabled:cursor-wait ${justAdded ? "bg-[#2f8f4e]" : "bg-ink hover:bg-red"}`}
         >
           <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/15 transition-transform duration-700 group-hover:translate-x-[400%]" />
-          {adding ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : "Add to basket"}
+          {adding ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+              Adding…
+            </>
+          ) : justAdded ? (
+            <>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12.5l4.5 4.5L19 7.5" className="auth-check" />
+              </svg>
+              Added to basket
+            </>
+          ) : (
+            "Add to basket"
+          )}
         </button>
-        <button
-          onClick={() => setWished((w) => !w)}
-          aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
-          aria-pressed={wished}
-          className={`grid w-14 place-items-center border transition-all duration-300 hover:border-ink ${wished ? "border-red text-red" : "border-[#d4d4d4] text-ink"}`}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill={wished ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.7" className={`transition-transform duration-300 ${wished ? "scale-110" : ""}`}>
-            <path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0112 6a5.4 5.4 0 019.3 6c-2.3 4.6-9.3 9-9.3 9z" />
-          </svg>
-        </button>
+        <WishHeart
+          p={p}
+          href={pathname}
+          size={20}
+          ring={false}
+          className="relative grid w-14 place-items-center border border-[#d4d4d4] transition-all duration-300 hover:border-ink aria-pressed:border-red"
+          idleClassName="text-ink"
+        />
       </div>
 
       <p className="mt-4 text-center text-[13px] text-muted">
@@ -155,7 +171,7 @@ export default function BuyBox({
           <p className="mb-4 text-[12px] font-semibold uppercase tracking-[0.2em] text-muted">Add a little extra</p>
           <div className="grid grid-cols-3 gap-3">
             {extras.map((x) => {
-              const on = added.includes(x.name);
+              const on = cart.some((c) => c.key === x.href);
               return (
                 <div key={x.name} className="group">
                   <Link href={x.href} className="relative block aspect-square overflow-hidden bg-mist">
@@ -164,7 +180,7 @@ export default function BuyBox({
                   <Link href={x.href} className="mt-2 line-clamp-2 block text-[13px] leading-snug text-ink hover:text-red">{x.name}</Link>
                   <p className="mt-0.5 text-[13px] font-semibold text-ink">{taka(x.price)}</p>
                   <button
-                    onClick={() => setAdded((a) => (on ? a.filter((n) => n !== x.name) : [...a, x.name]))}
+                    onClick={() => (on ? removeLine(x.href) : addToCart({ key: x.href, href: x.href, name: x.name, img: x.img, price: x.price }, 1, { silent: true }))}
                     className={`mt-1.5 text-[12px] font-semibold uppercase tracking-[0.1em] underline-offset-4 transition-colors ${on ? "text-[#2f8f4e]" : "text-ink hover:text-red hover:underline"}`}
                   >
                     {on ? "✓ Added" : "+ Add"}
@@ -212,19 +228,6 @@ export default function BuyBox({
         </a>
       </div>
 
-      {/* Toast */}
-      <div
-        role="status"
-        className={`fixed bottom-6 left-1/2 z-[80] flex w-[min(92vw,460px)] -translate-x-1/2 items-center gap-3 bg-ink px-5 py-4 text-[14px] text-white shadow-2xl transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${
-          toast ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
-        }`}
-      >
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#2f8f4e]">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M5 12l5 5L20 7" /></svg>
-        </span>
-        <span className="flex-1">{toast}</span>
-        <a href="#" className="shrink-0 text-[12px] font-semibold uppercase tracking-[0.12em] underline underline-offset-4">View</a>
-      </div>
     </div>
   );
 }

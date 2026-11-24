@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { img, taka, type Product } from "./catalog";
+import WishHeart from "./WishHeart";
+import { addToCart, toCartItem } from "./cart";
+import { flyToCart } from "./flyToCart";
 
 const PRICE_BANDS = [
   { id: "u20", label: "Under ৳20,000", min: 0, max: 20000 },
@@ -30,7 +33,6 @@ export default function ProductListing({ products, title, hrefBase }: { products
   const [sort, setSort] = useState("featured");
   const [cols, setCols] = useState<3 | 4>(4);
   const [drawer, setDrawer] = useState(false);
-  const [wish, setWish] = useState<string[]>([]);
 
   // Options available in this sub-category
   const allMaterials = useMemo(() => [...new Set(products.map((p) => p.material))].sort(), [products]);
@@ -243,8 +245,6 @@ export default function ProductListing({ products, title, hrefBase }: { products
                     p={p}
                     href={p.href ?? `${hrefBase}/${p.id}`}
                     delay={(i % PAGE) * 40}
-                    wished={wish.includes(p.id)}
-                    onWish={() => toggle(wish, setWish, p.id)}
                   />
                 ))}
               </div>
@@ -348,7 +348,58 @@ function Stars({ value }: { value: number }) {
   );
 }
 
-function ProductCard({ p, href, delay, wished, onWish }: { p: Product; href: string; delay: number; wished: boolean; onWish: () => void }) {
+/** Card button: Adding… → photo flies into the bag → ✓ Added. Always visible on touch screens. */
+function AddToCartButton({ p, href }: { p: Product; href: string }) {
+  const [state, setState] = useState<"idle" | "adding" | "done">("idle");
+
+  const add = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (state !== "idle") return;
+    setState("adding");
+    const photo = e.currentTarget.closest("article")?.querySelector("img") ?? e.currentTarget;
+    await flyToCart(photo, img(p.img, 300));
+    addToCart(toCartItem(p, href));
+    setState("done");
+    setTimeout(() => setState("idle"), 1800);
+  };
+
+  return (
+    <button
+      onClick={add}
+      aria-live="polite"
+      className={`absolute inset-x-3 bottom-3 flex items-center justify-center gap-2 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] shadow-sm transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] md:translate-y-4 md:py-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 ${
+        state === "done"
+          ? "bg-[#2f8f4e] text-white md:translate-y-0 md:opacity-100"
+          : state === "adding"
+            ? "bg-ink text-white md:translate-y-0 md:opacity-100"
+            : "bg-white/95 text-ink hover:bg-ink hover:text-white"
+      }`}
+    >
+      {state === "adding" ? (
+        <>
+          <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+          Adding
+        </>
+      ) : state === "done" ? (
+        <>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12.5l4.5 4.5L19 7.5" className="auth-check" />
+          </svg>
+          Added
+        </>
+      ) : (
+        <>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+            <path d="M8 8V6.5a4 4 0 018 0V8h-1.8V6.5a2.2 2.2 0 00-4.4 0V8z" />
+            <path d="M4.2 8h15.6l1 15H3.2z" />
+          </svg>
+          Add to cart
+        </>
+      )}
+    </button>
+  );
+}
+
+function ProductCard({ p, href, delay }: { p: Product; href: string; delay: number }) {
   const off = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
   return (
     <article className="mega-in group" style={{ "--delay": `${delay}ms` } as React.CSSProperties}>
@@ -381,22 +432,14 @@ function ProductCard({ p, href, delay, wished, onWish }: { p: Product; href: str
           </span>
         )}
 
-        <button
-          onClick={onWish}
-          aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
-          aria-pressed={wished}
-          className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/95 shadow-sm transition-all duration-300 hover:scale-110 ${
-            wished ? "text-red opacity-100" : "text-ink opacity-100 md:opacity-0 md:group-hover:opacity-100"
-          }`}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill={wished ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" className={`transition-transform duration-300 ${wished ? "scale-110" : ""}`}>
-            <path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0112 6a5.4 5.4 0 019.3 6c-2.3 4.6-9.3 9-9.3 9z" />
-          </svg>
-        </button>
+        <WishHeart
+          p={p}
+          href={href}
+          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/95 shadow-sm transition-all duration-300 hover:scale-110"
+          idleClassName="text-ink md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100"
+        />
 
-        <button className="absolute inset-x-3 bottom-3 translate-y-4 bg-white py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink opacity-0 shadow-sm transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] hover:bg-ink hover:text-white group-hover:translate-y-0 group-hover:opacity-100">
-          Add to cart
-        </button>
+        <AddToCartButton p={p} href={href} />
       </div>
 
       <div className="mt-4">

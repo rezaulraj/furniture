@@ -5,6 +5,8 @@ import Carousel from "./components/Carousel";
 import HeroSlider from "./components/HeroSlider";
 import Footer from "./components/Footer";
 import UspStrip from "./components/UspStrip";
+import InstaGallery from "./components/InstaGallery";
+import { noteHref } from "./components/styleNotes";
 import { collectionHref, findCollection } from "./components/collections";
 import Link from "next/link";
 import { roomHref, slugify } from "./components/menuData";
@@ -48,15 +50,6 @@ const rooms = [
   { n: "Hallway", i: "1484101403633-562f891dc89a", href: `${roomHref("Living Room")}#shoe-rack` },
 ];
 
-const insta = [
-  "1522708323590-d24dbb6b0267",
-  "1560448204-e02f11c3d0e2",
-  "1583847268964-b28dc8f51f92",
-  "1600566753190-17f0baa2a6c3",
-  "1615874959474-d609969a20ed",
-  "1631679706909-1844bbd07221",
-];
-
 const videos = [
   { n: "Oak Counter Stool — Natural", i: "1598300042247-d088f8ab3a91" },
   { n: "Spring into Outdoors", i: "1586105251261-72a756497a11" },
@@ -66,9 +59,9 @@ const videos = [
 ];
 
 const trio = [
-  { t: "Request a Catalogue", d: "Pre-order our new Winter Catalogue and discover the season's collection in print.", i: "1558997519-83ea9252edf8" },
-  { t: "Discover our Fabrics", d: "Order up to six free swatches and find the perfect upholstery for your sofa.", i: "1594026112284-02bb6f3352fe" },
-  { t: "Interior Project Solution", d: "From homes to hotels — our design team delivers complete turnkey interiors.", i: "1551298370-9d3d53740c72" },
+  { t: "Request a Catalogue", href: "/catalogue", d: "Pre-order our new Winter Catalogue and discover the season's collection in print.", i: "1558997519-83ea9252edf8" },
+  { t: "Discover our Fabrics", href: "/fabrics", d: "Order up to six free swatches and find the perfect upholstery for your sofa.", i: "1594026112284-02bb6f3352fe" },
+  { t: "Interior Project Solution", href: "/interior-projects", d: "From homes to hotels — our design team delivers complete turnkey interiors.", i: "1551298370-9d3d53740c72" },
 ];
 
 
@@ -274,22 +267,7 @@ export default function Home() {
               </h2>
               <p className="mt-3 text-muted">Share your space with #MyFurniture for a chance to be featured.</p>
             </Reveal>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-              {insta.map((i, k) => (
-                <Reveal key={i} delay={k * 70}>
-                  <a href="#" className="group relative block aspect-square overflow-hidden">
-                    <Image src={img(i, 600)} alt="Customer home" fill sizes="(min-width:1024px) 16vw, 50vw" className="object-cover transition-transform duration-700 group-hover:scale-110" />
-                    <span className="absolute inset-0 grid place-items-center bg-red/0 text-white opacity-0 transition-all duration-500 group-hover:bg-red/60 group-hover:opacity-100">
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                        <rect x="3" y="3" width="18" height="18" rx="5" />
-                        <circle cx="12" cy="12" r="4" />
-                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
-                      </svg>
-                    </span>
-                  </a>
-                </Reveal>
-              ))}
-            </div>
+            <InstaGallery />
           </div>
         </section>
 
@@ -325,9 +303,9 @@ export default function Home() {
               <p className="mt-5 max-w-sm text-[16px] leading-relaxed text-muted">
                 The dining table takes centre stage this season — discover our top tips for thoughtful styling, from layered linens to warm candlelight.
               </p>
-              <a href="#" className="link-line mt-8 inline-block text-[12px] font-semibold uppercase tracking-[0.18em] text-ink hover:text-red">
+              <Link href={noteHref("how-to-set-the-table")} className="link-line mt-8 inline-block text-[12px] font-semibold uppercase tracking-[0.18em] text-ink hover:text-red">
                 Read more
-              </a>
+              </Link>
             </Reveal>
             <Reveal delay={150}>
               <div className="group relative aspect-[16/10] overflow-hidden">
@@ -342,7 +320,7 @@ export default function Home() {
           <div className="mx-auto grid max-w-[1440px] gap-10 px-4 md:grid-cols-3 md:px-8">
             {trio.map((t, k) => (
               <Reveal key={t.t} delay={k * 120}>
-                <a href="#" className="group block">
+                <Link href={t.href} className="group block">
                   <div className="relative aspect-[4/3] overflow-hidden bg-mist">
                     <Image src={img(t.i, 900)} alt={t.t} fill sizes="(min-width:768px) 33vw, 100vw" className="object-cover transition-transform duration-[1.2s] group-hover:scale-105" />
                   </div>
@@ -351,7 +329,7 @@ export default function Home() {
                   <span className="mt-5 inline-block border border-ink px-6 py-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink transition-all duration-300 group-hover:border-red group-hover:bg-red group-hover:text-white">
                     Learn more
                   </span>
-                </a>
+                </Link>
               </Reveal>
             ))}
           </div>
@@ -370,9 +348,9 @@ export default function Home() {
                 <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-white/90">
                   We love working with professionals who share our passion for homeware. Interior designers, developers and architects enjoy generous discounts and a dedicated account manager.
                 </p>
-                <a href="#" className="mt-8 inline-block bg-white px-8 py-4 text-[12px] font-semibold uppercase tracking-[0.18em] text-ink transition-colors duration-300 hover:bg-charcoal hover:text-white">
+                <Link href="/trade" className="mt-8 inline-block bg-white px-8 py-4 text-[12px] font-semibold uppercase tracking-[0.18em] text-ink transition-colors duration-300 hover:bg-charcoal hover:text-white">
                   Discover more
-                </a>
+                </Link>
               </div>
             </div>
           </Reveal>

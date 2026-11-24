@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { signIn } from "../account";
 
 type Mode = "login" | "signup";
 type Values = { name: string; email: string; phone: string; password: string };
@@ -52,8 +53,12 @@ export default function AuthForm({ mode }: { mode: Mode }) {
     setTouched({ name: true, email: true, phone: true, password: true, terms: true });
     if (Object.keys(errors).length) return;
     setStatus("loading");
-    // No backend yet — simulate a request.
-    setTimeout(() => setStatus("done"), 1300);
+    // No backend yet — simulate a request, then remember the user in this browser.
+    setTimeout(() => {
+      const fromEmail = v.email.split("@")[0].replace(/[._-]+/g, " ").replace(/\w/g, (c) => c.toUpperCase());
+      signIn({ name: signup ? v.name.trim() : fromEmail, email: v.email.trim(), phone: v.phone.trim() });
+      setStatus("done");
+    }, 1300);
   };
 
   const pw = strength(v.password);
@@ -74,10 +79,13 @@ export default function AuthForm({ mode }: { mode: Mode }) {
             : "You're signed in. Pick up right where you left off."}
         </p>
         <Link
-          href="/"
+          href="/account"
           className="mt-8 inline-flex items-center gap-3 bg-ink px-8 py-4 text-[12px] font-semibold uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-red"
         >
-          Continue shopping <span aria-hidden>→</span>
+          Go to my account <span aria-hidden>→</span>
+        </Link>
+        <Link href="/" className="mt-4 text-[14px] text-muted transition-colors hover:text-ink">
+          Continue shopping
         </Link>
       </div>
     );

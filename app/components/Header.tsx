@@ -6,6 +6,8 @@ import Image from "next/image";
 import { FEATURED, MEGA, roomHref, slugify } from "./menuData";
 import { subHref } from "./catalog";
 import SearchOverlay from "./SearchOverlay";
+import WishlistButton from "./WishlistDrawer";
+import CartButton from "./CartDrawer";
 
 const img = (id: string, w = 600) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
@@ -180,19 +182,16 @@ export default function Header({ solid: forceSolid = false }: { solid?: boolean 
               </svg>
             </button>
             {/* Account — solid person */}
-            <Link href="/login" aria-label="Account — log in" className="hidden transition-all duration-300 hover:scale-110 hover:text-red sm:block">
+            <Link href="/account" aria-label="Your account" className="hidden transition-all duration-300 hover:scale-110 hover:text-red sm:block">
               <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="7" r="5" />
                 <path d="M2.5 23c0-5.5 4.3-9.5 9.5-9.5s9.5 4 9.5 9.5z" />
               </svg>
             </Link>
-            {/* Bag — solid shopping bag with handle */}
-            <button aria-label="Bag" className="transition-all duration-300 hover:scale-110 hover:text-red">
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 8V6.5a4 4 0 018 0V8h-1.8V6.5a2.2 2.2 0 00-4.4 0V8z" />
-                <path d="M4.2 8h15.6l1 15H3.2zM8.9 10.6a.9.9 0 100 1.8.9.9 0 000-1.8zm6.2 0a.9.9 0 100 1.8.9.9 0 000-1.8z" fillRule="evenodd" />
-              </svg>
-            </button>
+            {/* Wishlist — heart with live count, opens the drawer */}
+            <WishlistButton />
+            {/* Bag — live count, opens the mini cart */}
+            <CartButton />
           </div>
         </div>
 

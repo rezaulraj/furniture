@@ -138,3 +138,203 @@ body {
   stroke-dasharray: 24;
   animation: auth-check 0.7s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* Instagram post modal */
+@keyframes insta-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes insta-pop {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes insta-burst {
+  0% { opacity: 0; transform: scale(0.3); }
+  25% { opacity: 1; transform: scale(1.15); }
+  45% { transform: scale(0.95); }
+  70% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.1); }
+}
+.insta-fade { animation: insta-fade 0.35s ease both; }
+.insta-pop { animation: insta-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.insta-burst { animation: insta-burst 0.9s ease-out both; }
+.insta-item { animation: mega-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: var(--delay, 0ms); }
+@media (prefers-reduced-motion: reduce) {
+  .insta-fade, .insta-pop, .insta-burst, .insta-item { animation: none; }
+}
+
+/* Side drawer + "box full" nudge (fabric swatches) */
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+.drawer-in { animation: drawer-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes swatch-shake {
+  0%, 100% { transform: none; }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+.swatch-shake { animation: swatch-shake 0.4s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .drawer-in, .swatch-shake { animation: none; }
+}
+
+/* Wishlist: header heart bounce, badge pop, drawer rows, empty-state heart, card heart pop */
+@keyframes wish-bump {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.35); }
+  45% { transform: scale(0.9); }
+  65% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.wish-bump { animation: wish-bump 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes wish-badge {
+  from { transform: scale(0); }
+  60% { transform: scale(1.25); }
+  to { transform: scale(1); }
+}
+.wish-badge { animation: wish-badge 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes wish-row {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: none; }
+}
+.wish-row { animation: wish-row 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: var(--delay, 0ms); }
+@keyframes wish-draw {
+  from { stroke-dasharray: 1; stroke-dashoffset: 1; fill: transparent; }
+  70% { stroke-dasharray: 1; stroke-dashoffset: 0; fill: transparent; }
+  to { stroke-dasharray: 1; stroke-dashoffset: 0; fill: rgba(200, 16, 46, 0.12); }
+}
+.wish-draw { animation: wish-draw 1.4s 0.3s ease-out both; }
+@keyframes wish-pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.7); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1.1); }
+}
+.wish-pop { animation: wish-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes wish-ring {
+  from { transform: scale(0.6); opacity: 0.7; }
+  to { transform: scale(1.9); opacity: 0; }
+}
+.wish-ring { animation: wish-ring 0.6s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .wish-bump, .wish-badge, .wish-row, .wish-draw, .wish-pop, .wish-ring { animation: none; }
+}
+
+/* Cart: qty number roll, freshly-added row flash, empty bag drop */
+@keyframes qty-roll {
+  from { transform: translateY(70%); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.qty-roll { animation: qty-roll 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes cart-flash {
+  0%, 35% { background-color: var(--color-rose); }
+  100% { background-color: transparent; }
+}
+.cart-flash { animation: wish-row 0.6s cubic-bezier(0.22, 1, 0.36, 1) both, cart-flash 2s ease-out both; animation-delay: var(--delay, 0ms), 0.3s; }
+@keyframes cart-drop {
+  0% { transform: translateY(-40px) rotate(-12deg); opacity: 0; }
+  55% { transform: translateY(4px) rotate(4deg); opacity: 1; }
+  75% { transform: translateY(-6px) rotate(-2deg); }
+  100% { transform: none; }
+}
+.cart-drop { display: inline-block; animation: cart-drop 0.9s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .qty-roll, .cart-flash, .cart-drop { animation: none; }
+}
+
+/* Wishlist hero: floating polaroids + beating heart */
+@keyframes float-slow {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -12px; }
+}
+.float-slow { animation: float-slow 6s ease-in-out infinite; }
+@keyframes heart-beat {
+  0%, 60%, 100% { transform: scale(1); }
+  15% { transform: scale(1.18); }
+  30% { transform: scale(0.95); }
+  45% { transform: scale(1.1); }
+}
+.heart-beat { display: inline-block; animation: heart-beat 2.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .float-slow, .heart-beat { animation: none; }
+}
+
+/* Account: order tracker line draws in */
+@keyframes tracker-fill {
+  from { transform: scaleX(0); }
+  to { transform: none; }
+}
+.tracker-fill { transform-origin: left; animation: tracker-fill 1.1s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .tracker-fill { animation: none; }
+}
+
+/* Track order: van drives to its spot on the route, then idles with a gentle bob */
+@keyframes van-drive {
+  from { left: 0; }
+}
+.van-drive { animation: van-drive 1.6s 0.3s cubic-bezier(0.45, 0, 0.2, 1) both; }
+@keyframes van-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.van-bob { animation: van-bob 0.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .van-drive, .van-bob { animation: none; }
+}
+
+/* Contact FAQ: answer fades down when opened */
+.faq[open] .faq-body { animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Delivery page: red range slider, hero van crossing a moving road */
+.range-red {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, var(--color-red) var(--fill, 50%), #e5e5e5 var(--fill, 50%));
+  outline: none;
+  cursor: pointer;
+}
+.range-red::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 3px solid var(--color-red);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+}
+.range-red::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.range-red::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 3px solid var(--color-red);
+}
+@keyframes road-move {
+  from { background-position: 0 0; }
+  to { background-position: -26px 0; }
+}
+.road-move { animation: road-move 0.5s linear infinite; }
+@keyframes van-cross {
+  from { left: -60px; }
+  to { left: calc(100% - 70px); }
+}
+.van-cross { animation: van-cross 3.2s 0.6s cubic-bezier(0.3, 0, 0.2, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .road-move, .van-cross { animation: none; }
+}
+
+/* About: bouncing scroll cue */
+@keyframes scroll-cue {
+  0%, 100% { transform: translateY(-3px); }
+  50% { transform: translateY(4px); }
+}
+.scroll-cue { display: inline-block; animation: scroll-cue 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue { animation: none; }
+}

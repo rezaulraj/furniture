@@ -1,3 +1,18 @@
+// Pages that exist so far; everything else stays "#" until it's built.
+const LINKS: Record<string, string> = {
+  "Your Account": "/account",
+  "Track Order": "/track-order",
+  "Contact Us": "/contact",
+  FAQ: "/faq",
+  Delivery: "/delivery",
+  "Returns & Refunds": "/returns",
+  "About Us": "/about",
+  "Trade Customers": "/trade",
+  "Request a Catalogue": "/catalogue",
+  "Online Catalogue": "/catalogue",
+  "Style Notes Blog": "/style-notes/how-to-set-the-table",
+};
+
 const footer = {
   Customers: ["Your Account", "Track Order", "Trade Customers", "Request a Catalogue", "Feedback", "Contact Us"],
   "Need Help?": ["FAQ", "Delivery", "Returns & Refunds", "EMI Options", "Showroom Locator", "Care Guide"],
@@ -16,7 +31,7 @@ export default function Footer() {
               <ul className="space-y-3">
                 {links.map((l) => (
                   <li key={l}>
-                    <a href="#" className="text-[14px] text-muted transition-colors hover:text-red">{l}</a>
+                    <a href={LINKS[l] ?? "#"} className="text-[14px] text-muted transition-colors hover:text-red">{l}</a>
                   </li>
                 ))}
               </ul>
