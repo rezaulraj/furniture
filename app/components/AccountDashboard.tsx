@@ -323,9 +323,45 @@ function Orders() {
                           </li>
                         ))}
                       </ul>
+                      {o.customer && o.shipTo && (
+                        <dl className="mt-6 grid gap-5 text-[14px] leading-relaxed text-charcoal sm:grid-cols-3">
+                          <div>
+                            <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">Deliver to</dt>
+                            <dd className="mt-1.5">
+                              <span className="font-medium text-ink">{o.customer.name}</span> · {o.customer.phone}
+                              <br />
+                              {o.shipTo.line}, {o.shipTo.area}, {o.shipTo.district}
+                            </dd>
+                          </div>
+                          {o.slot && (
+                            <div>
+                              <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">Delivery slot</dt>
+                              <dd className="mt-1.5">
+                                <span className="font-medium text-ink">{o.slot.date}</span>
+                                <br />
+                                {o.slot.time}
+                              </dd>
+                            </div>
+                          )}
+                          {o.payment && (
+                            <div>
+                              <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">Payment</dt>
+                              <dd className="mt-1.5">
+                                <span className="font-medium text-ink">{o.payment.method}</span>
+                                {o.payment.detail && (
+                                  <>
+                                    <br />
+                                    {o.payment.detail}
+                                  </>
+                                )}
+                              </dd>
+                            </div>
+                          )}
+                        </dl>
+                      )}
                       <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
                         <p className="text-[14px] text-muted">
-                          Paid <span className="font-semibold text-ink">{taka(o.total)}</span> · Free delivery &amp; installation
+                          {o.payment?.status === "Pay on delivery" ? "To pay on delivery" : "Paid"} <span className="font-semibold text-ink">{taka(o.total)}</span> · Free delivery &amp; installation
                         </p>
                         <a href="#" className="border border-ink px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink transition-colors hover:bg-ink hover:text-white">
                           Need help?

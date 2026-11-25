@@ -6,7 +6,21 @@ import { useSyncExternalStore } from "react";
 
 export type User = { name: string; email: string; phone: string; since: number; news: boolean };
 export type OrderLine = { name: string; img: string; qty: number; price: number; href: string };
-export type Order = { no: string; placed: number; total: number; lines: OrderLine[] };
+export type OrderCustomer = { name: string; phone: string; email: string };
+export type OrderShipTo = { line: string; area: string; district: string; notes?: string };
+export type OrderPayment = { method: string; detail?: string; status: "Paid" | "Pay on delivery" };
+export type Order = {
+  no: string;
+  placed: number;
+  total: number;
+  lines: OrderLine[];
+  // Added by the checkout. Older orders saved before it existed won't have these.
+  customer?: OrderCustomer;
+  shipTo?: OrderShipTo;
+  slot?: { date: string; time: string };
+  payment?: OrderPayment;
+  breakdown?: { subtotal: number; discount: number; delivery: number; promo?: string };
+};
 export type Address = { id: string; label: string; name: string; phone: string; line: string; district: string; isDefault: boolean };
 
 /** Tiny localStorage-backed store shared by every component that reads it. */

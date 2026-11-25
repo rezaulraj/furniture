@@ -276,7 +276,7 @@ function Result({ order }: { order: Order }) {
               ))}
             </ul>
             <div className="mt-3 flex justify-between border-t border-ink pt-4 text-[15px]">
-              <span className="font-semibold text-ink">Total paid</span>
+              <span className="font-semibold text-ink">{order.payment?.status === "Pay on delivery" ? "To pay on delivery" : "Total paid"}</span>
               <span className="font-semibold text-ink">{taka(order.total)}</span>
             </div>
           </section>
@@ -284,7 +284,33 @@ function Result({ order }: { order: Order }) {
           {/* Address */}
           <section className="mega-in bg-white p-6 md:p-7" style={{ "--delay": "280ms" } as React.CSSProperties}>
             <h4 className="text-[18px] font-semibold text-ink">Delivering to</h4>
-            {address ? (
+            {order.shipTo && order.customer ? (
+              <div className="mt-3 space-y-4 text-[14px] leading-relaxed text-charcoal">
+                <p>
+                  <span className="font-medium text-ink">{order.customer.name}</span>
+                  <br />
+                  {order.shipTo.line}
+                  <br />
+                  {order.shipTo.area}, {order.shipTo.district}
+                  <br />
+                  <span className="text-muted">{order.customer.phone}</span>
+                </p>
+                {order.slot && (
+                  <p className="border-t border-line pt-4">
+                    <span className="block text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">Delivery slot</span>
+                    <span className="font-medium text-ink">{order.slot.date}</span> · {order.slot.time}
+                  </p>
+                )}
+                {order.payment && (
+                  <p className="border-t border-line pt-4">
+                    <span className="block text-[12px] font-semibold uppercase tracking-[0.14em] text-muted">Payment</span>
+                    <span className="font-medium text-ink">{order.payment.method}</span>
+                    {order.payment.detail && <> · {order.payment.detail}</>}
+                    <span className={`ml-2 rounded-full px-2 py-0.5 text-[11px] font-bold ${order.payment.status === "Paid" ? "bg-[#e3f2e8] text-[#2f8f4e]" : "bg-mist text-charcoal"}`}>{order.payment.status}</span>
+                  </p>
+                )}
+              </div>
+            ) : address ? (
               <p className="mt-3 text-[14px] leading-relaxed text-charcoal">
                 <span className="font-medium text-ink">{address.name}</span>
                 <br />

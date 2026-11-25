@@ -2,19 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { img, taka } from "./catalog";
 import { addToCart, cartTotals, clearCart, removeLine, useCart, type CartItem } from "./cart";
+import { PROMOS, PROMO_KEY } from "./CheckoutView";
 import { DeliveryProgress, QtyStepper } from "./CartDrawer";
-import { addOrder } from "./account";
 import { removeWish, toggleWish, useHydrated, useWishlist, type WishItem } from "./wishlist";
 import { HeartIcon } from "./WishlistDrawer";
 
-// Demo promo codes (no backend yet).
-const PROMOS: Record<string, { pct: number; label: string }> = {
-  WELCOME10: { pct: 10, label: "10% welcome discount" },
-  HOME5: { pct: 5, label: "5% off your home" },
-};
 
 const cartToWish = (item: CartItem): WishItem => ({
   href: item.href,
@@ -33,7 +29,6 @@ export default function CartView() {
   const hydrated = useHydrated();
   const wishlist = useWishlist();
   const [leaving, setLeaving] = useState<string[]>([]);
-  const [order, setOrder] = useState<{ no: string; total: number; count: number } | null>(null);
 
   const remove = (key: string) => {
     setLeaving((l) => [...l, key]);
@@ -67,7 +62,6 @@ export default function CartView() {
     );
   }
 
-  if (order) return <OrderPlaced order={order} />;
   if (!list.length) return <EmptyCart />;
 
   return (
@@ -106,7 +100,7 @@ export default function CartView() {
       </div>
 
       {/* Summary */}
-      <Summary list={list} onPlaced={setOrder} />
+      <Summary list={list} />
     </div>
   );
 }
@@ -165,10 +159,26 @@ function Line({ item, delay, onRemove, onSave }: { item: CartItem; delay: number
   );
 }
 
-function Summary({ list, onPlaced }: { list: CartItem[]; onPlaced: (o: { no: string; total: number; count: number }) => void }) {
+function Summary({ list }: { list: CartItem[] }) {
+  const router = useRouter();
   const { count, subtotal, savings, delivery } = cartTotals(list);
   const [code, setCode] = useState("");
-  const [promo, setPromo] = useState<string | null>(null);
+  // Keep the applied code for the checkout page.
+  const [promo, setPromoState] = useState<string | null>(() => {
+    try {
+      const p = sessionStorage.getItem(PROMO_KEY);
+      return p && PROMOS[p] ? p : null;
+    } catch {
+      return null;
+    }
+  });
+  const setPromo = (p: string | null) => {
+    setPromoState(p);
+    try {
+      if (p) sessionStorage.setItem(PROMO_KEY, p);
+      else sessionStorage.removeItem(PROMO_KEY);
+    } catch {}
+  };
   const [promoError, setPromoError] = useState(0);
   const [placing, setPlacing] = useState(false);
 
@@ -187,18 +197,7 @@ function Summary({ list, onPlaced }: { list: CartItem[]; onPlaced: (o: { no: str
 
   const checkout = () => {
     setPlacing(true);
-    setTimeout(() => {
-      const no = `FUR-${String(Date.now()).slice(-6)}`;
-      addOrder({
-        no,
-        placed: Date.now(),
-        total,
-        lines: list.map((i) => ({ name: i.name, img: i.img, qty: i.qty, price: i.price, href: i.href })),
-      });
-      onPlaced({ no, total, count });
-      clearCart();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 1400);
+    router.push("/checkout");
   };
 
   return (
@@ -262,7 +261,7 @@ function Summary({ list, onPlaced }: { list: CartItem[]; onPlaced: (o: { no: str
           {placing ? (
             <>
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-              Placing order…
+              Loading checkout…
             </>
           ) : (
             <>
@@ -393,46 +392,6 @@ function EmptyCart() {
           </Link>
         ))}
       </div>
-    </div>
-  );
-}
-
-function OrderPlaced({ order }: { order: { no: string; total: number; count: number } }) {
-  return (
-    <div className="fade-up mx-auto max-w-xl py-6 text-center">
-      <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-[#2f8f4e] text-white shadow-[0_20px_40px_-15px_rgba(47,143,78,0.7)]">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5 12.5l4.5 4.5L19 7.5" className="auth-check" />
-        </svg>
-      </div>
-      <h2 className="mt-8 text-[clamp(1.9rem,3.4vw,2.6rem)] font-semibold text-ink">Thank you, your order is placed</h2>
-      <p className="mt-3 text-[16px] leading-relaxed text-muted">
-        We&apos;ll call you shortly to confirm your delivery date. A receipt is on its way to your inbox.
-      </p>
-      <div className="mt-8 grid grid-cols-3 divide-x divide-line border border-line bg-white">
-        {[
-          ["Order no.", order.no],
-          ["Items", String(order.count)],
-          ["Total", taka(order.total)],
-        ].map(([k, v]) => (
-          <div key={k} className="px-3 py-5">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">{k}</p>
-            <p className="mt-1.5 text-[17px] font-semibold text-ink">{v}</p>
-          </div>
-        ))}
-      </div>
-      <Link
-        href="/track-order"
-        className="mr-3 mt-10 inline-block border border-ink px-9 py-4 text-[12px] font-semibold uppercase tracking-[0.18em] text-ink transition-colors duration-300 hover:bg-ink hover:text-white"
-      >
-        Track order
-      </Link>
-      <Link
-        href="/categories"
-        className="mt-10 inline-block bg-ink px-9 py-4 text-[12px] font-semibold uppercase tracking-[0.18em] text-white transition-colors duration-300 hover:bg-red"
-      >
-        Continue shopping
-      </Link>
     </div>
   );
 }

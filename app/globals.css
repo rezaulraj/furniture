@@ -350,3 +350,22 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .leaf-drift { animation: none; }
 }
+
+/* EMI: instalment timeline fills segment by segment */
+@keyframes emi-seg {
+  from { transform: scaleX(0); opacity: 0.2; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+.emi-seg {
+  transform-origin: left;
+  animation: emi-seg 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+@keyframes card-tilt {
+  0%, 100% { transform: rotate(-6deg) translateY(0); }
+  50% { transform: rotate(-4deg) translateY(-10px); }
+}
+.card-tilt { animation: card-tilt 7s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .emi-seg, .card-tilt { animation: none; }
+}

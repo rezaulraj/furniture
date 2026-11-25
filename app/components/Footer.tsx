@@ -6,6 +6,7 @@ const LINKS: Record<string, string> = {
   FAQ: "/faq",
   Delivery: "/delivery",
   "Returns & Refunds": "/returns",
+  "EMI Options": "/emi",
   "About Us": "/about",
   Careers: "/careers",
   Press: "/press",
