@@ -223,7 +223,7 @@ export default function AboutPage() {
             {[
               { t: "Visit a showroom", s: "Sit, touch and get free styling advice.", h: "/contact", img: "1618220179428-22790b461013" },
               { t: "Shop the collection", s: "Every room, made to last.", h: "/categories", img: "1617806118233-18e1de247200" },
-              { t: "Work with us", s: "Join our makers, stylists and crews.", h: "/contact", img: "1524758631624-e2822e304c36" },
+              { t: "Work with us", s: "Join our makers, stylists and crews.", h: "/careers", img: "1524758631624-e2822e304c36" },
             ].map((c, i) => (
               <Reveal key={c.t} delay={i * 100}>
                 <Link href={c.h} className="group relative block aspect-[4/5] overflow-hidden md:aspect-[3/4]">

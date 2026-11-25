@@ -11,9 +11,9 @@ const img = (id: string, w = 2400) =>
 
 // Each slide features a real catalogue product, so its links open that product's page.
 const SLIDES = [
-  { room: "Living Room", sub: "3-Seater Sofa" },
   { room: "Bedroom", sub: "King Size Bed" },
   { room: "Dining", sub: "Dining Set" },
+  { room: "Living Room", sub: "3-Seater Sofa" },
 ].map((s) => {
   const p = productsFor(s.room, findSub(s.room, slugify(s.sub))!)[0];
   return { ...s, img: p.img, product: p.name, price: taka(p.price), href: productHref(s.room, s.sub, p.id) };

@@ -237,7 +237,7 @@ function Item({ qa, term, open, onToggle }: { qa: QA; term: string; open: boolea
           <span className={`absolute h-3.5 w-[1.5px] bg-current transition-transform duration-500 ${open ? "scale-y-0" : ""}`} />
         </span>
       </button>
-      <div className={`grid transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+      <div inert={!open} className={`grid transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
         <div className="overflow-hidden">
           <div className="mx-6 border-t border-line pb-6 pt-5 md:mx-8">
             <p className="max-w-3xl text-[15px] leading-relaxed text-charcoal md:text-[16px]">
